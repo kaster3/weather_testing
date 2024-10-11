@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "pythonproject4"
+version = "0.1.0"
+description = ""
+authors = ["Fedorov Semen <FedorovSemen28@yandex.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.0"
+uvicorn = {extras = ["standart"], version = "^0.31.1"}
+pydantic = {extras = ["email"], version = "^2.9.2"}
+pydantic-settings = "^2.5.2"
+sqlalchemy = "^2.0.35"
+asyncpg = "^0.29.0"
+alembic = "^1.13.3"
+orjson = "^3.10.7"
+black = "^24.10.0"
+gunicorn = "^23.0.0"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
