@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "pythonproject4"
+name = "BaseFastAPI"
 version = "0.1.0"
 description = ""
 authors = ["Fedorov Semen <FedorovSemen28@yandex.ru>"]
