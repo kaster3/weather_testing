@@ -11,6 +11,6 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry install
 
-COPY Foundation-FastAPI .
+COPY . .
 
 CMD ["make", "run"]
