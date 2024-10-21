@@ -6,7 +6,7 @@ bind = "0.0.0.0:8000"
 # по максимуму использовать процесс это кол-во логических ядер умножить на 2 и + 1
 workers = 1
 
-env = os.path.join(os.getcwd(), f".env")
+env = os.path.join(os.getcwd(), ".env")
 
 if os.path.exists(env):
     print(env)
