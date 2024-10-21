@@ -13,4 +13,4 @@ RUN poetry install
 
 COPY . .
 
-CMD ["make", "run"]
+CMD ["python", "run_main.py"]
