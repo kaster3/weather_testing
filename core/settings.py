@@ -50,10 +50,10 @@ class RunConfig(BaseModel):
 
 
 class GunicornConfig(BaseModel):
-    host: str = "0.0.0.0"
-    port: int = 8000
-    workers: int = 1
-    timeout: int = 900
+    host: str
+    port: int
+    workers: int
+    timeout: int
 
 
 class Settings(BaseSettings):
@@ -64,7 +64,7 @@ class Settings(BaseSettings):
         env_prefix="FASTAPI__",
     )
     conf: RunConfig
-    gunicorn: GunicornConfig = GunicornConfig()
+    gunicorn: GunicornConfig
     db: DataBase
     logging: LoggingConfig
     api: ApiPrefix = ApiPrefix()
