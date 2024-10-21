@@ -12,15 +12,14 @@ repos:
     hooks:
       - id: black
         name: Black
-        language_version: python3.11
+        language_version: python3.12
         files: \.pyi?$
         exclude: "migrations/.*"
         args: [
-          "--line-length=90",
+          "--line-length=100",
           "--target-version=py310",
           "--target-version=py311",
-          "--check",
-          "--diff",
+          "--target-version=py312"
         ]
 
   - repo: https://github.com/pycqa/isort
@@ -28,14 +27,12 @@ repos:
     hooks:
       - id: isort
         name: Isort
-        language_version: python3.11
+        language_version: python3.12.3
         additional_dependencies:
           - colorama
         args: [
           "--profile=black",
           "--line-length=90",
-          "--check-only",
-          "--diff",
         ]
 
   - repo: https://github.com/pycqa/flake8
@@ -43,6 +40,9 @@ repos:
     hooks:
       - id: flake8
         name: Flake8
-        language_version: python3.11
+        language_version: python3.12
         exclude: "migrations|.git|__pycache__|__init__.py|.env|.env.example"
-        args: [ "--max-line-length=90", "--ignore=F821,E704,W503" ]
+        args: [
+          "--max-line-length=100",
+          "--ignore=F821,E704,W503",
+        ]
