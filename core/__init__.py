@@ -3,4 +3,4 @@ __all__ = (
     "Settings",
 )
 
-from .settings import settings, Settings
+from .settings import Settings, settings

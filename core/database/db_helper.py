@@ -1,18 +1,23 @@
 from typing import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine, async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from core import settings
 
 
 class DataBaseHelper:
     def __init__(
-            self,
-            url: str,
-            echo: bool,
-            echo_pool: bool,
-            pool_size: int,
-            max_overflow: int,
+        self,
+        url: str,
+        echo: bool,
+        echo_pool: bool,
+        pool_size: int,
+        max_overflow: int,
     ) -> None:
         self.engine: AsyncEngine = create_async_engine(
             url=url,
@@ -25,7 +30,6 @@ class DataBaseHelper:
             bind=self.engine,
             autoflush=False,
             expire_on_commit=False,
-
         )
 
     async def dispose(self) -> None:
