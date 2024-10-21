@@ -5,15 +5,15 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
-from core import settings
 from api.api_v1 import router as a1
+from core import settings
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logging.basicConfig(
         level=logging.INFO,
-        format=settings.log.format,
+        format=settings.logging.log_format,
     )
     logging.info("Application starts successfully!")
     yield
