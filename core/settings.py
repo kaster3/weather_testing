@@ -1,5 +1,7 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Literal
+
 from pydantic import BaseModel, PostgresDsn
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class ApiV1Prefix(BaseModel):
@@ -13,7 +15,14 @@ class ApiPrefix(BaseModel):
 
 
 class LoggingConfig(BaseModel):
-    format: str
+    log_level: Literal[
+        "debug",
+        "info",
+        "warning",
+        "error",
+        "critical",
+    ] = "info"
+    log_format: str
 
 
 class DataBase(BaseModel):
@@ -32,7 +41,7 @@ class DataBase(BaseModel):
     }
 
 
-class LaunchConfig(BaseModel):
+class RunConfig(BaseModel):
     app: str
     host: str
     port: int
@@ -40,16 +49,24 @@ class LaunchConfig(BaseModel):
     workers: int
 
 
+class GunicornConfig(BaseModel):
+    host: str = "0.0.0.0"
+    port: int = 8000
+    workers: int = 1
+    timeout: int = 900
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=(".env.template", ".env"),
         case_sensitive=False,
         env_nested_delimiter="__",
-        env_prefix="FASTAPI__"
+        env_prefix="FASTAPI__",
     )
-    conf: LaunchConfig
+    conf: RunConfig
+    gunicorn: GunicornConfig = GunicornConfig()
     db: DataBase
-    log: LoggingConfig
+    logging: LoggingConfig
     api: ApiPrefix = ApiPrefix()
 
 
