@@ -17,11 +17,16 @@ alembic = "^1.13.3"
 orjson = "^3.10.7"
 black = "^24.10.0"
 gunicorn = "^23.0.0"
+pytest = "^8.3.3"
+pytest-asyncio = "^0.24.0"
 
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
 pre-commit = "^4.0.1"
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
 
 [build-system]
 requires = ["poetry-core"]
