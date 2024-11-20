@@ -12,3 +12,8 @@ for rout in (endpoint,):
     router.include_router(
         router=rout,
     )
+
+
+@router.get("")
+async def root():
+    return {"message": "this path is http://127.0.0.1:8000/api/v1"}
