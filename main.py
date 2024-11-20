@@ -5,7 +5,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
-from api.api_v1 import router as a1
+from api import router as api_router
 from core import settings
 
 
@@ -26,8 +26,7 @@ application = FastAPI(
 )
 
 application.include_router(
-    router=a1,
-    prefix="/report",
+    router=api_router,
 )
 
 
