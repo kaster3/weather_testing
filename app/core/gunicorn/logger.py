@@ -2,7 +2,7 @@ from logging import Formatter
 
 from gunicorn.glogging import Logger
 
-from core.settings import settings
+from app.core.settings import settings
 
 
 class GunicornLogger(Logger):
