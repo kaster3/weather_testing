@@ -5,8 +5,8 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
-from api import router as api_router
-from core import settings
+from app.api import router as api_router
+from app.core import settings
 
 
 @asynccontextmanager
