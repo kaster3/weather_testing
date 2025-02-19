@@ -1,4 +1,4 @@
-from utils import case_convector, pluralize
+from app.utils import case_convector, pluralize
 
 
 def test_case_convector():
