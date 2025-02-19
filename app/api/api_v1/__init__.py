@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from core import settings
+from app.core import settings
 
 from .some_endpoint import router as endpoint
 
