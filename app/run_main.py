@@ -3,9 +3,9 @@ __all__ = (
     "main",
 )
 
-from core import settings
-from core.gunicorn import Application, get_app_options
-from main import application
+from app.core import settings
+from app.core.gunicorn import Application, get_app_options
+from app.main import application
 
 
 def main():
