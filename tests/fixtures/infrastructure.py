@@ -3,8 +3,8 @@ import logging
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.database.db_helper import DataBaseHelper
-from core.database.models.base import Base
+from app.core.database.db_helper import DataBaseHelper
+from app.core.database.models.base import Base
 from tests.core.settings import TestSettings
 
 logger = logging.getLogger(__name__)
