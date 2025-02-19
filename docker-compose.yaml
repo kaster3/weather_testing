@@ -5,20 +5,27 @@ services:
         dockerfile: Dockerfile
       command:
         - "python"
-        - "run_main.py"
+        - "app/run_main.py"
       restart: always
       ports:
         - "8000:8000"
+      depends_on:
+        db:
+          condition: service_healthy
 
     db:
       image: postgres:16.2
       container_name: db
       restart: always
-      shm_size: 128mb
       env_file:
         - .env.docker
       volumes:
         - db:/var/lib/postgresql/data
+      healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+        interval: 2s
+        timeout: 5s
+        retries: 5
 
 volumes:
   db:
