@@ -1,7 +1,6 @@
 from sqlalchemy import MetaData
 from sqlalchemy.orm import DeclarativeBase, declared_attr
 
-from app.core import settings
 from app.utils import camel_case_to_snake_case, pluralize
 
 
@@ -12,7 +11,13 @@ class Base(DeclarativeBase):
     # которых alembic генерирует миграции с их добавлением только на индексы, а на остальные
     # без naming conventions нужно будет вводить вручную
     metadata = MetaData(
-        naming_convention=settings.db.naming_convention,
+        naming_convention={
+            "ix": "ix_%(column_0_label)s",
+            "uq": "uq_%(table_name)s_%(column_0_N_name)s",
+            "ck": "ck_%(table_name)s_%(constraint_name)s",
+            "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+            "pk": "pk_%(table_name)s",
+        },
     )
 
     # автоматическая генерация имени таблицы на основе название класса (CamelCase -> snake_case)
@@ -21,10 +26,3 @@ class Base(DeclarativeBase):
     @declared_attr.directive
     def __tablename__(cls) -> str:
         return f"{pluralize(camel_case_to_snake_case(cls.__name__))}"
-
-    # foo: Mapped[int]
-    # bar: Mapped[int]
-    #
-    # __table_args__ = (
-    #     UniqueConstraint("foo", "bar"),
-    # )
