@@ -15,6 +15,7 @@ from app.ioc.init_container import init_async_container
 async def lifespan(app: FastAPI):
     logging.info("Application starts successfully!")
     yield
+    logging.info("Shutting down application...")
     await app.state.dishka_container.close()
     logging.info("Application ends successfully!")
 
@@ -34,7 +35,7 @@ def create_fastapi_app() -> FastAPI:
 def create_app(settings: Settings) -> FastAPI:
     """Настраиваем логи, контейнер с зависимостями и инициализируем наше приложение"""
     logging.basicConfig(
-        level=logging.INFO,
+        level=settings.logging.log_level,
         format=settings.logging.log_format,
     )
     app = create_fastapi_app()
