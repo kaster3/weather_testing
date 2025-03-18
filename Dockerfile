@@ -21,4 +21,4 @@ COPY app/ ./app/
 ENV PYTHONPATH=/app
 
 #запуск идет с WORKDIR/app/run_main.py
-CMD ["python", "app/run_main.py"]
+CMD ["python", "app/main.py"]

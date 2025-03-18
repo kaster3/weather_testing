@@ -5,7 +5,7 @@ services:
         dockerfile: Dockerfile
       command:
         - "python"
-        - "app/run_main.py"
+        - "app/main.py"
       restart: always
       ports:
         - "8000:8000"
