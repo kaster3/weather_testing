@@ -16,12 +16,12 @@ class ApiPrefix(BaseModel):
 
 class LoggingConfig(BaseModel):
     log_level: Literal[
-        "debug",
-        "info",
-        "warning",
-        "error",
-        "critical",
-    ] = "info"
+        "DEBUG",
+        "INFO",
+        "WARNING",
+        "ERROR",
+        "CRITICAL",
+    ] = "INFO"
     log_format: str
 
 
@@ -31,14 +31,6 @@ class DataBase(BaseModel):
     echo_pool: bool
     pool_size: int
     max_overflow: int
-
-
-class RunConfig(BaseModel):
-    app: str
-    host: str
-    port: int
-    reload: bool
-    workers: int
 
 
 class GunicornConfig(BaseModel):
@@ -55,8 +47,10 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
         env_prefix="FASTAPI__",
     )
-    conf: RunConfig
     gunicorn: GunicornConfig
     db: DataBase
     logging: LoggingConfig
     api: ApiPrefix = ApiPrefix()
+
+
+settings = Settings()
