@@ -13,7 +13,7 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry install
 
-COPY .env .template.env ./
+COPY .template.env ./
 # Возьми папку app с текущего локального уровня (BaseFastAPI) и скопируй ее в контейнер, где . это
 # WORKDIR в Dockerfile от куда все скрипты запускаются и перенеси ее с этого уровня . в папку app/
 COPY app/ ./app/
