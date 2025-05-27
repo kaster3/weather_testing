@@ -7,6 +7,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from app.core import settings
+
 
 class DataBaseHelper:
     def __init__(
@@ -36,3 +38,8 @@ class DataBaseHelper:
     async def session_getter(self) -> AsyncGenerator[AsyncSession, None]:
         async with self.session_factory() as session:
             yield session
+
+
+db_helper = DataBaseHelper(
+    url=str(settings.db.url), echo=False, echo_pool=False, pool_size=50, max_overflow=10
+)

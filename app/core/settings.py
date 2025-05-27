@@ -1,7 +1,12 @@
+from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+BASE_PATH = Path(__file__).resolve().parents[2]
+TEMPLATE_ENV_PATH = BASE_PATH / ".template.env"
+ENV_PATH = BASE_PATH / ".env"
 
 
 class ApiV1Prefix(BaseModel):
@@ -40,9 +45,22 @@ class GunicornConfig(BaseModel):
     timeout: int
 
 
+class CookieConfig(BaseModel):
+    key: str = "anon_user_id"
+    httponly: bool = True
+    max_age: int = 86400
+    secure: bool = False
+    same_site: Literal["lax", "strict", "none"] | None = "lax"
+
+
+class Links(BaseModel):
+    WEATHER_API: str = "https://api.open-meteo.com/v1/forecast"
+    GEOCODER_API: str = "https://nominatim.openstreetmap.org/search"
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=(".template.env", ".env"),
+        env_file=(TEMPLATE_ENV_PATH, ENV_PATH),
         case_sensitive=False,
         env_nested_delimiter="__",
         env_prefix="FASTAPI__",
@@ -51,6 +69,8 @@ class Settings(BaseSettings):
     db: DataBase
     logging: LoggingConfig
     api: ApiPrefix = ApiPrefix()
+    cookie: CookieConfig = CookieConfig()
+    links: Links = Links()
 
 
 settings = Settings()

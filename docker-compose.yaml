@@ -7,8 +7,6 @@ services:
         - "python"
         - "app/main.py"
       restart: always
-      ports:
-        - "8000:8000"
       depends_on:
         db:
           condition: service_healthy
@@ -19,6 +17,8 @@ services:
       restart: always
       env_file:
         - .template.env.docker
+      ports:
+        - "5432:5432"
       volumes:
         - db:/var/lib/postgresql/data
       healthcheck:
@@ -26,6 +26,18 @@ services:
         interval: 2s
         timeout: 5s
         retries: 5
+
+
+    nginx:
+      build:
+        context: ./frontend
+        dockerfile: Dockerfile
+      ports:
+        - "80:80"
+      depends_on:
+        - app
+      volumes:
+        - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
 
 volumes:
   db:
