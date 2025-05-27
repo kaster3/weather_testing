@@ -7,6 +7,7 @@ from httpx import AsyncClient
 from app.core import Settings
 from app.core.database import City
 from app.core.repositories.city import CityRepository
+from app.core.repositories.cookies import CookieRepository
 from app.core.repositories.user_city import UserCityRepository
 
 log = logging.getLogger(__name__)
@@ -37,7 +38,9 @@ class GetWeatherInteractor(BaseUserCityInteractor):
             if not geo_data:
                 raise HTTPException(status_code=404, detail="Город не найден")
 
-            weather_resp = await self._get_weather_by_city_name(geo_data=geo_data, client=client)
+            weather_resp = await self._get_weather_by_city_name(
+                geo_data=geo_data, client=client
+            )
             weather_data = weather_resp.json()
             weather = weather_data.get("current_weather", {})
 
@@ -48,7 +51,8 @@ class GetWeatherInteractor(BaseUserCityInteractor):
     async def _get_coordinates_by_name(self, data, client: AsyncClient):
         input_city = data.city
         geo_resp = await client.get(
-            self.settings.links.GEOCODER_API, params={"q": input_city, "format": "json", "limit": 1}
+            self.settings.links.GEOCODER_API,
+            params={"q": input_city, "format": "json", "limit": 1},
         )
         return geo_resp
 
@@ -64,20 +68,45 @@ class GetWeatherInteractor(BaseUserCityInteractor):
 
 
 class CreateUserCityInteractor(UserCityInteractor):
+    def __init__(
+        self,
+        settings: Settings,
+        city_repository: CityRepository,
+        user_city_repository: UserCityRepository,
+        user_repository: CookieRepository,
+    ) -> None:
+        super().__init__(settings, city_repository, user_city_repository)
+        self.user_repository = user_repository
+
     async def __call__(self, request: Request, city_name: str) -> None:
         user_id = getattr(request.state, "user_id", None) or request.cookies.get(
             self.settings.cookie.key
         )
-        city = await self.city_repository.get_city_by_name(name=city_name)
+        # специфичный случай, если бд снесут, а куки останутся у пользователей,
+        # то будет ошибка, что нет такого пользователя, хотя кука есть, это лучше
+        # добавить в обработку ошибок, чтобы каждый раз не делать запрос в бд
+        # на проверку
+        if await self.user_repository.get_anonymous_user_by_id(user_id=user_id) is None:
+            await self.user_repository.create_anonymous_user(user_id=user_id)
 
+        # Тут тоже самое, незачем каждый раз проверять поступающий город в бд
+        # Наверное лучше обработать ошибку, это будет происходить реже,
+        # нежели каждый раз стучаться в бд
+        city = await self.city_repository.get_city_by_name(name=city_name)
         if city is None:
             city = await self.city_repository.create_city(name=city_name)
             log.info("New city: '%s' is created", city.name)
 
-        await self.user_city_repository.create_user_city(city_id=city.id, user_id=user_id)
+        await self.user_city_repository.create_user_city(
+            city_id=city.id, user_id=user_id
+        )
         log.info("History successfully saved: user - %s city - %s", user_id, city.name)
         await self.city_repository.increase_search(city=city)
-        log.info("Increased amount of searching by 1. %s total %d", city.name, city.search_count)
+        log.info(
+            "Increased amount of searching by 1. %s total %d",
+            city.name,
+            city.search_count,
+        )
 
 
 class GetLastSearchInteractor(UserCityInteractor):
@@ -85,7 +114,9 @@ class GetLastSearchInteractor(UserCityInteractor):
         user_id = getattr(request.state, "user_id", None) or request.cookies.get(
             self.settings.cookie.key
         )
-        user_city = await self.user_city_repository.get_last_searched_city_by_user(user_id)
+        user_city = await self.user_city_repository.get_last_searched_city_by_user(
+            user_id
+        )
         if user_city is None:
             return None
         city = await self.city_repository.get_city_by_id(city_id=user_city.city_id)
