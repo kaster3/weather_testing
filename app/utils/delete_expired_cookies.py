@@ -14,9 +14,9 @@ async def delete_expired_cookies() -> None:
         settings = await requested_container.get(Settings)
 
         while True:
+            await asyncio.sleep(settings.cookie.max_age)
             try:
                 await interactor()
                 log.info("Expired cookies deleted.")
             except Exception as e:
                 logging.exception("Error while deleting expired cookies: %s", e)
-            await asyncio.sleep(settings.cookie.max_age)
