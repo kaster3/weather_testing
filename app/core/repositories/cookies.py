@@ -13,6 +13,10 @@ log = logging.getLogger(__name__)
 
 class CookieRepository(Protocol):
     @abstractmethod
+    async def get_anonymous_user_by_id(self, user_id: str) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def create_anonymous_user(self, user_id: str) -> None:
         raise NotImplementedError
 
@@ -22,6 +26,10 @@ class CookieRepository(Protocol):
 
 
 class ICookieRepository(Repository):
+    async def get_anonymous_user_by_id(self, user_id: str) -> AnonymousUser| None:
+        user = await self.session.get(AnonymousUser, user_id)
+        return user
+
     async def create_anonymous_user(self, user_id: str) -> None:
         user = AnonymousUser(id=user_id)
         self.session.add(user)
